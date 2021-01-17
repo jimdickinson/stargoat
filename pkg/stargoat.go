@@ -83,9 +83,8 @@ func (c *Client) PostDoc(namespace, collection string, document interface{}) (st
 		return "", err
 	}
 	params := &documents.PostDocParams{}
-	params.Context = c.Ctx
-	params.HTTPClient = c.httpClient
-	params.XCassandraToken = c.Token.AuthToken
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.Body = json.RawMessage(b)
@@ -102,9 +101,8 @@ func (c *Client) PutDoc(namespace, collection, id string, document interface{}) 
 		return "", err
 	}
 	params := &documents.PutDocParams{}
-	params.Context = c.Ctx
-	params.HTTPClient = c.httpClient
-	params.XCassandraToken = c.Token.AuthToken
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.DocumentID = id
@@ -122,9 +120,8 @@ func (c *Client) PatchDoc(namespace, collection, id string, document interface{}
 		return "", err
 	}
 	params := &documents.PatchDocParams{}
-	params.Context = c.Ctx
-	params.HTTPClient = c.httpClient
-	params.XCassandraToken = c.Token.AuthToken
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.DocumentID = id
@@ -138,9 +135,8 @@ func (c *Client) PatchDoc(namespace, collection, id string, document interface{}
 
 func (c *Client) GetDoc(namespace, collection, id string) (interface{}, error) {
 	params := &documents.GetDocParams{}
-	params.Context = c.Ctx
-	params.HTTPClient = c.httpClient
-	params.XCassandraToken = c.Token.AuthToken
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.DocumentID = id
@@ -157,9 +153,8 @@ func (c *Client) GetDoc(namespace, collection, id string) (interface{}, error) {
 
 func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 	params := &documents.DeleteDocParams{}
-	params.Context = c.Ctx
-	params.HTTPClient = c.httpClient
-	params.XCassandraToken = c.Token.AuthToken
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.DocumentID = id
@@ -193,3 +188,15 @@ func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 // func (c *Client) SearchDoc(params *SearchDocParams) (*SearchDocOK, *SearchDocNoContent, error)     {}
 // func (c *Client) UpgradeCollection(params *UpgradeCollectionParams) (*UpgradeCollectionOK, error)  {}
 // func (c *Client) SetTransport(transport runtime.ClientTransport)                                   {}
+
+type HasCommonParamSetters interface {
+	SetContext(ctx context.Context)
+	SetHTTPClient(client *http.Client)
+	SetXCassandraToken(xCassandraToken string)
+}
+
+func SetCommonParams(h HasCommonParamSetters, client *http.Client, ctx context.Context, xCassandraToken string) {
+	h.SetHTTPClient(client)
+	h.SetContext(ctx)
+	h.SetXCassandraToken(xCassandraToken)
+}
