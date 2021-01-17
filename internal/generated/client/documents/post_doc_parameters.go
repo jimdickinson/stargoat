@@ -69,7 +69,7 @@ type PostDocParams struct {
 	  The JSON document
 
 	*/
-	Body string
+	Body interface{}
 	/*CollectionID
 	  the name of the collection
 
@@ -131,13 +131,13 @@ func (o *PostDocParams) SetXCassandraToken(xCassandraToken string) {
 }
 
 // WithBody adds the body to the post doc params
-func (o *PostDocParams) WithBody(body string) *PostDocParams {
+func (o *PostDocParams) WithBody(body interface{}) *PostDocParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the post doc params
-func (o *PostDocParams) SetBody(body string) {
+func (o *PostDocParams) SetBody(body interface{}) {
 	o.Body = body
 }
 
@@ -176,8 +176,10 @@ func (o *PostDocParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regis
 		return err
 	}
 
-	if err := r.SetBodyParam(o.Body); err != nil {
-		return err
+	if o.Body != nil {
+		if err := r.SetBodyParam(o.Body); err != nil {
+			return err
+		}
 	}
 
 	// path param collection-id

@@ -69,7 +69,7 @@ type PatchDocParams struct {
 	  The JSON document
 
 	*/
-	Body string
+	Body interface{}
 	/*CollectionID
 	  the name of the collection
 
@@ -136,13 +136,13 @@ func (o *PatchDocParams) SetXCassandraToken(xCassandraToken string) {
 }
 
 // WithBody adds the body to the patch doc params
-func (o *PatchDocParams) WithBody(body string) *PatchDocParams {
+func (o *PatchDocParams) WithBody(body interface{}) *PatchDocParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the patch doc params
-func (o *PatchDocParams) SetBody(body string) {
+func (o *PatchDocParams) SetBody(body interface{}) {
 	o.Body = body
 }
 
@@ -192,8 +192,10 @@ func (o *PatchDocParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Regi
 		return err
 	}
 
-	if err := r.SetBodyParam(o.Body); err != nil {
-		return err
+	if o.Body != nil {
+		if err := r.SetBodyParam(o.Body); err != nil {
+			return err
+		}
 	}
 
 	// path param collection-id
