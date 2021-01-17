@@ -166,13 +166,14 @@ func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 	return docNoContent != nil, nil
 }
 
-func (c *Client) SearchDoc(namespace, collection string, search *string) (interface{}, error) {
+func (c *Client) SearchDoc(namespace, collection string, search *string, raw *bool) (interface{}, error) {
 	params := &documents.SearchDocParams{}
 	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
 
 	params.NamespaceID = namespace
 	params.CollectionID = collection
 	params.Where = search
+	params.Raw = raw
 
 	docOK, docNoContent, err := c.impl.Documents.SearchDoc(params)
 	if err != nil {

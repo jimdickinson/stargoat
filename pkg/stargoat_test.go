@@ -87,6 +87,28 @@ func TestAuthAndRoundtrip(t *testing.T) {
 		assert.Error(t, err, "DeleteDoc on a collection that does not exist should error")
 		assert.False(t, ok)
 	})
+
+	t.Run("test search doc", func(t *testing.T) {
+		client, err := NewClient(stargateURL, getToken(), true, nil)
+		assert.NoError(t, err)
+
+		type MyDoc struct {
+			First string
+			Last  string
+			Age   int
+		}
+
+		doc := MyDoc{"Jason", "Dickinson", 6}
+		id, err := client.PostDoc(namespace, "abc", doc)
+		assert.NoError(t, err)
+		assert.Len(t, id, 36)
+		
+		search := "{\"age\":{\"$eq\":6}}"
+		raw := true
+		newDoc, err := client.SearchDoc(namespace, "abc", &search, &raw)
+		assert.NoError(t, err)
+		JSONEq(t, doc, newDoc)
+	})
 }
 
 func JSONEq(t *testing.T, b1, b2 interface{}) bool {
