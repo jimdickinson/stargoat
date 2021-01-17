@@ -1,0 +1,30 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.14
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      env:
+        ASTRA_DB_KEYSPACE: ${{ secrets.ASTRA_DB_KEYSPACE }}
+        ASTRA_DB_USERNAME: ${{ secrets.ASTRA_DB_USERNAME }}
+        ASTRA_DB_PASSWORD: ${{ secrets.ASTRA_DB_PASSWORD }}
+        ASTRA_DB_BASE_URL: ${{ secrets.ASTRA_DB_BASE_URL }}
+      run: go test -v ./...
