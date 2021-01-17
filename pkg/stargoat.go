@@ -166,6 +166,24 @@ func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 	return docNoContent != nil, nil
 }
 
+func (c *Client) SearchDoc(namespace, collection string, search *string) (interface{}, error) {
+	params := &documents.SearchDocParams{}
+	SetCommonParams(params, c.httpClient, c.Ctx, c.Token.AuthToken)
+
+	params.NamespaceID = namespace
+	params.CollectionID = collection
+	params.Where = search
+
+	docOK, docNoContent, err := c.impl.Documents.SearchDoc(params)
+	if err != nil {
+		return nil, err
+	}
+	if docNoContent != nil {
+		return nil, nil
+	}
+	return docOK.Payload.Data, nil
+}
+
 // func (c *Client) CreateCollection(name string) error {
 // 	params := documents.CreateCollectionParams{}
 // 	params.XCassandraToken = c.Token.AuthToken
@@ -184,7 +202,6 @@ func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 // func (c *Client) GetOneNamespace(params *GetOneNamespaceParams) (*GetOneNamespaceOK, error)        {}
 // func (c *Client) PatchDocPath(params *PatchDocPathParams) (*PatchDocPathOK, error)                 {}
 // func (c *Client) PutDocPath(params *PutDocPathParams) (*PutDocPathOK, error)                       {}
-// func (c *Client) SearchDoc(params *SearchDocParams) (*SearchDocOK, *SearchDocNoContent, error)     {}
 // func (c *Client) UpgradeCollection(params *UpgradeCollectionParams) (*UpgradeCollectionOK, error)  {}
 // func (c *Client) SetTransport(transport runtime.ClientTransport)                                   {}
 
