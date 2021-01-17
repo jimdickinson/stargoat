@@ -152,7 +152,25 @@ func BenchmarkParallelPost(b *testing.B) {
 		for pb.Next() {
 			for bench.Next() {
 				doc := projects[rand.Intn(numProjects)]
-				client.PostDoc(namespace, "mycollection", doc)
+				id, err := client.PostDoc(namespace, "mycollection", doc)
+				assert.NoError(b, err)
+
+				sgDoc, err := client.GetDoc(namespace, "mycollection", id)
+				assert.NoError(b, err)
+
+				m, ok := sgDoc.(map[string]interface{})
+				assert.True(b, ok, "got type %T for sgDoc value", sgDoc)
+
+				t, ok := m["Stars"]
+				assert.True(b, ok)
+
+				starCountJsonNumber, ok := t.(json.Number)
+				assert.True(b, ok, "got type %T for Stars value", t)
+
+				starCount, err := starCountJsonNumber.Int64()
+				assert.NoError(b, err)
+				assert.GreaterOrEqual(b, starCount, int64(1))
+				assert.LessOrEqual(b, starCount, int64(10000))
 			}
 		}
 	})
