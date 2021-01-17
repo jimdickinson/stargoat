@@ -180,7 +180,6 @@ func (c *Client) DeleteDoc(namespace, collection, id string) (bool, error) {
 // func (c *Client) DeleteNamespace(params *DeleteNamespaceParams) (*DeleteNamespaceNoContent, error) {}
 // func (c *Client) GetAllNamespaces(params *GetAllNamespacesParams) (*GetAllNamespacesOK, error)     {}
 // func (c *Client) GetCollections(params *GetCollectionsParams) (*GetCollectionsOK, error)           {}
-// func (c *Client) GetDoc(params *GetDocParams) (*GetDocOK, *GetDocNoContent, error)                 {}
 // func (c *Client) GetDocPath(params *GetDocPathParams) (*GetDocPathOK, *GetDocPathNoContent, error) {}
 // func (c *Client) GetOneNamespace(params *GetOneNamespaceParams) (*GetOneNamespaceOK, error)        {}
 // func (c *Client) PatchDocPath(params *PatchDocPathParams) (*PatchDocPathOK, error)                 {}
