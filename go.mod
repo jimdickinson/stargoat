@@ -3,6 +3,7 @@ module github.com/jimdickinson/stargoat
 go 1.14
 
 require (
+	github.com/aws/aws-lambda-go v1.22.0
 	github.com/bxcodec/faker/v3 v3.5.0
 	github.com/go-openapi/errors v0.19.9
 	github.com/go-openapi/runtime v0.19.24
